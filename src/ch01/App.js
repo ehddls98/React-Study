@@ -49,4 +49,5 @@ CustomInput.defaultProps = {
   disabled: false,
   value: "빈값"
 }
+
 export default App;
