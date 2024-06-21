@@ -18,7 +18,7 @@ function App() {
     console.log(test.a);
     console.log(test["a"]); //객체의 키값을 변수로 사용하고 싶을 때는 대괄호를 사용하고 ""로 감싸줘야 한다.
 
-    const emptyUser = {
+    const emptyUser = { //
         username: "",
         password: "",
         name: ""
@@ -30,7 +30,7 @@ function App() {
         name: useRef()
     }
 
-    const [ userList, setUserList ] = useState([]);
+    const [ userList, setUserList ] = useState([]); //inputData를 통해 만들어진 객체들을 저장할 배열
     const [ inputData, setInputData ] = useState({...emptyUser});
 
     const handleInputKeyDown = (e) => {
@@ -66,7 +66,8 @@ function App() {
         Swal.fire({
             title: `${key} edit`,
             input: "text",
-            inputValue: userList[index][key], //객체의 키값을 변수로 사용하고 싶을 때는 대괄호를 사용하고 ""로 감싸줘야 한다.
+            //객체의 키값을 변수로 사용하고 싶을 때는 대괄호를 사용하고 ""로 감싸줘야 한다.
+            inputValue: userList[index][key], 
             showCancelButton: true,
             cancelButtonText: "취소",
             confirmButtonText: "확인"
@@ -101,7 +102,8 @@ function App() {
             confirmButtonColor: "red",
             cancelButtonText: "취소",
         }).then(result =>{
-            if(result.isConfirmed) {
+            if(result.isConfirmed) { //확인 버튼을 눌렀을 때
+                //userList를 스프레드로 복사해 오고 그안의 값들 중 현재 선택한 항목의 index와 같지 않은 것들만 필터링하여 새로운 배열을 만들어 userList에 저장
                 setUserList(userList => [ ...userList.filter((user, index) => index !== parseInt(e.target.value)) ])
             }
         });
