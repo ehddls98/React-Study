@@ -1,6 +1,6 @@
 import "./style.css";
 
-function DataTableHeader({ mode, setMode }) {
+function DataTableHeader({ mode, setMode, products, setProducts}) {
 
     const handleChangeModeClick = (e) => {
         setMode(parseInt(e.target.value));
@@ -26,13 +26,28 @@ function DataTableHeader({ mode, setMode }) {
     const resetMode = () => {
         setMode(0);
     }
+
+    const handleInputChange = (e) => {
+        setProducts({
+            ...products,
+            [e.target.name]: e.target.value
+        });
+    }
     return (  
         <header className="table-header">
             <div className="input-group">
-                <input type="text" disabled={mode === 0 || mode === 3} placeholder="상품명" autoFocus />
-                <input type="text" disabled={mode === 0 || mode === 3} placeholder="사이즈" />
-                <input type="text" disabled={mode === 0 || mode === 3} placeholder="색상" />
-                <input type="text" disabled={mode === 0 || mode === 3} placeholder="가격" />
+                <input name="product" type="text" 
+                onChange={handleInputChange} 
+                disabled={mode === 0 || mode === 3} placeholder="상품명" autoFocus />
+                <input name="product" type="text" 
+                onChange={handleInputChange} 
+                disabled={mode === 0 || mode === 3} placeholder="사이즈" />
+                <input name="product" type="text" 
+                onChange={handleInputChange} 
+                disabled={mode === 0 || mode === 3} placeholder="색상" />
+                <input name="product" type="text" 
+                onChange={handleInputChange} 
+                disabled={mode === 0 || mode === 3} placeholder="가격" />
             </div>
             <div>
                 {
