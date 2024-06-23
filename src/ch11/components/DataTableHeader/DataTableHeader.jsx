@@ -1,6 +1,6 @@
 import "./style.css";
 
-function DataTableHeader({ mode, setMode, products, setProducts}) {
+function DataTableHeader({ mode, setMode, products, addProducts, inputData, setInputData}) {
 
     const handleChangeModeClick = (e) => {
         setMode(parseInt(e.target.value));
@@ -9,6 +9,7 @@ function DataTableHeader({ mode, setMode, products, setProducts}) {
     const handleSubmitClick = () => {
         if(mode === 1) {
             alert("상품추가");
+            addProducts(products);
         }
         if(mode === 2) {
             alert("상품수정");
@@ -28,26 +29,34 @@ function DataTableHeader({ mode, setMode, products, setProducts}) {
     }
 
     const handleInputChange = (e) => {
-        setProducts({
-            ...products,
-            [e.target.name]: e.target.value
-        });
+        setInputData(inputData => {
+            return {
+                ...inputData,
+                [e.target.name]: e.target.value
+            }
+        })
     }
+
     return (  
         <header className="table-header">
             <div className="input-group">
-                <input name="product" type="text" 
+                <input name="productName" type="text" 
                 onChange={handleInputChange} 
-                disabled={mode === 0 || mode === 3} placeholder="상품명" autoFocus />
-                <input name="product" type="text" 
+                disabled={mode === 0 || mode === 3} 
+                placeholder="상품명" value={inputData.productName}
+                autoFocus />
+                <input name="size" type="text" 
                 onChange={handleInputChange} 
-                disabled={mode === 0 || mode === 3} placeholder="사이즈" />
-                <input name="product" type="text" 
+                disabled={mode === 0 || mode === 3} 
+                value={inputData.size} placeholder="사이즈" />
+                <input name="color" type="text" 
                 onChange={handleInputChange} 
-                disabled={mode === 0 || mode === 3} placeholder="색상" />
-                <input name="product" type="text" 
+                disabled={mode === 0 || mode === 3} 
+                value={inputData.color} placeholder="색상" />
+                <input name="price" type="text" 
                 onChange={handleInputChange} 
-                disabled={mode === 0 || mode === 3} placeholder="가격" />
+                disabled={mode === 0 || mode === 3} 
+                value={inputData.price} placeholder="가격" />
             </div>
             <div>
                 {

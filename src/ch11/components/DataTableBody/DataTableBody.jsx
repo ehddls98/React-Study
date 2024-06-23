@@ -16,14 +16,14 @@ function DataTableBody({ mode, products }) {
                 </thead>
                 <tbody>
                     {
-                        products.map(product => (
-                            <tr key={product.id}>
+                        products.map(({id, productName, size, color, price })  => (
+                            <tr key={id}>
                                 <th><input type="checkbox" disabled={mode === 0 || mode === 1} /></th>
-                                <td>{product.id}</td>
-                                <td>{product.productName}</td>
-                                <td>{product.size}</td>
-                                <td>{product.color}</td>
-                                <td>{product.price}</td>
+                                <td>{id}</td>
+                                <td>{productName}</td>
+                                <td>{size}</td>
+                                <td>{color}</td>
+                                <td>{price}</td>
                             </tr>
                         ))
                     }
