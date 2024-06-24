@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import "./style.css";
 import Swal from "sweetalert2";
 
-function DataTableHeader({ mode, setMode, setProducts }) {
+function DataTableHeader({ mode, setMode, setProducts, setDeleting }) {
 
     const emptyProduct = {
         id: "",
@@ -65,16 +65,28 @@ function DataTableHeader({ mode, setMode, setProducts }) {
                 icon: "success",
                 position: "top-center",
                 showConfirmButton: false,
-                timer: 2000
+                timer: 5000
             });
+            resetMode();
         }
         if(mode === 2) {
-            alert("상품수정");
+            alert("상품수정")
         }
         if(mode === 3) {
-            alert("상품삭제");
+            Swal.fire({
+                title: "상품 정보 삭제",
+                text: "정말로 삭제 하시겠습니까?",
+                showCancelButton: true,
+                confirmButtonText: "삭제",
+                confirmButtonColor: "red",
+                cancelButtonText: "취소"
+            }).then(result => {
+                if(result.isConfirmed) {
+                    setDeleting(true);
+                }
+            });
+
         }
-        resetMode();
     }
 
     const handleCancelClick = () => {

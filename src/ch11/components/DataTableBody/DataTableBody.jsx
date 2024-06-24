@@ -1,87 +1,93 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./style.css";
 
-function DataTableBody({ mode, products }) {
-
+function DataTableBody({ mode, setMode, products, setProducts, isDeleting, setDeleting}) {
     const [ viewProducts, setViewProducts ] = useState([]);
-    
     const [ checkedAll, setCheckedAll ] = useState(false);
 
     useEffect(() => {
-        resetViewProducts();
-        setCheckedAll(false);
-    }, [products, mode]) //products 배열이나 mode가 변경될 때마다 resetChecked 함수를 실행한다.
+        if(mode === 0) { //조회 모드일때
+            resetViewProducts(); //isChecked 체크를 모두 해체한다. 
+            setCheckedAll(false); //checkedAll을 false로 상태변경.
+        } 
+    }, [products, mode]); //products와 mode가 변경될때마다 실행된다.
 
     useEffect(() => {
-        const checkStates = viewProducts.map(product => product.isChecked);
-        if(checkStates.includes(false)) {
-            setCheckedAll(false); //하나라도 체크가 안된 체크박스가 있으면 checkedAll을 false로 변경한다.
-        } else {
-            setCheckedAll(true);
+        const checkStates = viewProducts.map(product => product.isChecked); 
+        //viewProducts 배열의 isChecked를 추출하여 ischecked만 있는 checkStates 배열에 저장
+        if(checkStates.includes(false)) { //하나라도 체크가 안되어있으면 전체 체크박스도 해제
+            setCheckedAll(false);
+        }else {
+            setCheckedAll(true); //모두 체크되어있으면 전체 체크박스도 체크
         }
-    }, [viewProducts]);
+    }, [viewProducts]); //상품이 추가될때 마다 실행
+
+    useEffect(() => {
+        if(isDeleting) {
+            setProducts([ ...viewProducts
+                .filter(viewProduct => viewProduct.isChecked === false)
+                .map(viewProduct => {
+                    const { isChecked, ...product} = viewProduct;
+                    return product;
+                }) //-> 새로 만들어진 배열을 setProducts로 넘겨준다.
+            ]);
+            setMode(0); //삭제가 완료되면 조회 모드로 변경한다.
+            setDeleting(false); //삭제가 완료되면 삭제 상태를 false로 변경한다.
+        }
+    }, [isDeleting]); //isDeleting이 변경될때마다 실행
 
     const resetViewProducts = () => {
-        setViewProducts([ ...products.map(product => ({...product, isCkecked: false})) ]);  
+        setViewProducts([ ...products.map(product => ({...product, isChecked: false})) ]); 
+        //props로 받은 products로 새로운 배열을 만들고 그 안의 isChecked를 false로 초기화한다.
     }
 
     const handleCheckedAllChange = (e) => {
-        setCheckedAll(checked => {
-            if(!checked) {
-                setViewProducts([ ...products.map(product => ({...product, isCkecked: true})) ]); 
-                //checked가 false일 때 모든 체크박스를 체크 상태로 변경한다.
+        setCheckedAll(checked => { //전체 체크박스의 상태 확인
+            if(!checked) { //true 일때 
+                setViewProducts([ ...products.map(product => ({...product, isChecked: true})) ]); //모두 체크 상태로 바꾼다
             } else {
-                resetViewProducts();
+                resetViewProducts(); //모든 체크박스 체크해제
             }
-            return !checked; //체크박스의 체크 상태를 반전시킨다.
+            return !checked; //checked 상태를 반전시킨다. 
         });
     }
-    
-    useEffect(() => {
-        if(checkedAll) {
-            setViewProducts([ ...products.map(product => ({...product, isCkecked: true})) ]); 
-            //checkedALl이 true일 때 모든 체크박스를 체크 상태로 변경한다.
-        } else {
-            resetViewProducts();
-        }
-    }, [checkedAll]) //checkedAll 상태가 변경될 때마다 useEffect 함수를 실행한다.
 
     const handleCheckedChange = (e) => {
-        if(mode === 2) {
-                setViewProducts(viewProducts => {
-                    return [ ...viewProducts.map(product => {
-                        if(product.id === parseInt(e.target.value)){
-                            return {
-                                ...product, 
-                                isChecked: !product.isChecked //체크박스의 체크 상태를 반전시킨다.
-                            }
-                        }
-                        return {
-                            ...product,
-                            isChecked: false
-                        }
-                    }) ]
-                });
-            }
-        }
-        if(mode === 3) {
+        if(mode === 2) {    //수정 모드일때 
             setViewProducts(viewProducts => {
-                return [ ...viewProducts.map(product => {
-                    if(product.id === parseInt(e.target.value)){
+                    return [...viewProducts.map(product => { //반복문을 돌면서 체크박스 상태를 확인한다.
+                    if(product.id === parseInt(e.target.value)) { //선택한 상품의 id와 같은 상품을 viewProducts에서 찾는다.
                         return {
-                            ...product, 
-                            isChecked: !product.isChecked //체크박스의 체크 상태를 반전시킨다.
+                            ...product,                         //products를 복사하여
+                            isChecked: !product.isChecked        //isChecked를 반전시킨다. 
                         }
                     }
-                    return product;
-
+                    return {
+                        ...product,
+                        isChecked: false //기존에 체크되어있던 체크박스를 해제한다.
+                    }
+                }) ]
+            });
         }
-            }) ]
-        });
+    
+
+        if(mode === 3) { //삭제 모드일때
+            setViewProducts(viewProducts => {
+                return [ ...viewProducts.map(product => { //반복문을 돌면서 체크박스 상태를 확인한다
+                    if(product.id === parseInt(e.target.value)) {
+                        return {
+                            ...product,
+                            isChecked: !product.isChecked //동일한 체크박스를 체크하면 그 체크박스의 상태를 반전시킨다.
+                        }
+                    }
+                    return product; //체크되어 있으면 그대로 둔다
+                }) ]
+            });
+        }
+
     }
 
-
-    return (  
+    return (
         <div className="table-body">
             <table>
                 <thead>
@@ -89,7 +95,7 @@ function DataTableBody({ mode, products }) {
                         <th>
                             <input 
                                 type="checkbox" 
-                                disabled={mode !== 3} 
+                                disabled={mode !== 3}
                                 onChange={handleCheckedAllChange}
                                 checked={checkedAll}
                             />
@@ -103,13 +109,13 @@ function DataTableBody({ mode, products }) {
                 </thead>
                 <tbody>
                     {
-                        viewProducts.map(product  => (
+                        viewProducts.map(product => (
                             <tr key={product.id}>
                                 <th>
                                     <input 
                                         type="checkbox" 
                                         disabled={mode === 0 || mode === 1} 
-                                        checked={product.isChecked} //true/false
+                                        checked={product.isChecked} 
                                         onChange={handleCheckedChange}
                                         value={product.id}
                                     />
@@ -122,6 +128,7 @@ function DataTableBody({ mode, products }) {
                             </tr>
                         ))
                     }
+                    
                 </tbody>
             </table>
         </div>
