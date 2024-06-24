@@ -1,6 +1,24 @@
+import { useState } from "react";
 import "./style.css";
 
-function DataTableHeader({ mode, setMode, products, addProducts, inputData, setInputData}) {
+function DataTableHeader({ mode, setMode, setProducts}) {
+
+    const emptyProduct = {
+        id: "",
+        productName: "",
+        size: "",
+        color: "",
+        price: ""
+    }
+
+    const [inputData, setInputData] = useState({...emptyProduct});
+
+    const handleInputChange = (e) => {
+        setInputData(inputData => ({ //화살표 뒤에 중괄호를 소괄호로 감싸면 객체를 반환한다는 의미다.
+                ...inputData,
+                [e.target.name]: e.target.value
+        }));
+    }
 
     const handleChangeModeClick = (e) => {
         setMode(parseInt(e.target.value));
@@ -8,8 +26,15 @@ function DataTableHeader({ mode, setMode, products, addProducts, inputData, setI
 
     const handleSubmitClick = () => {
         if(mode === 1) {
-            alert("상품추가");
-            addProducts(products);
+            setProducts(products => {
+                const productIds = products.map(product => product.id);
+                const maxId = 
+                    products.length === 0 
+                    ? 0 
+                    : Math.max.apply(null, productIds);
+
+                return [ ...products, {...inputData, id: maxId + 1} ];
+            });
         }
         if(mode === 2) {
             alert("상품수정");
@@ -26,37 +51,45 @@ function DataTableHeader({ mode, setMode, products, addProducts, inputData, setI
 
     const resetMode = () => {
         setMode(0);
-    }
-
-    const handleInputChange = (e) => {
-        setInputData(inputData => {
-            return {
-                ...inputData,
-                [e.target.name]: e.target.value
-            }
-        })
+        setInputData({ ...emptyProduct });
     }
 
     return (  
         <header className="table-header">
             <div className="input-group">
-                <input name="productName" type="text" 
-                onChange={handleInputChange} 
-                disabled={mode === 0 || mode === 3} 
-                placeholder="상품명" value={inputData.productName}
-                autoFocus />
-                <input name="size" type="text" 
-                onChange={handleInputChange} 
-                disabled={mode === 0 || mode === 3} 
-                value={inputData.size} placeholder="사이즈" />
-                <input name="color" type="text" 
-                onChange={handleInputChange} 
-                disabled={mode === 0 || mode === 3} 
-                value={inputData.color} placeholder="색상" />
-                <input name="price" type="text" 
-                onChange={handleInputChange} 
-                disabled={mode === 0 || mode === 3} 
-                value={inputData.price} placeholder="가격" />
+                <input 
+                    type="text" 
+                    disabled={mode === 0 || mode === 3} 
+                    name="productName" 
+                    value={inputData.productName}
+                    placeholder="상품명" 
+                    onChange={handleInputChange} 
+                    autoFocus 
+                />
+                <input 
+                    type="text" 
+                    disabled={mode === 0 || mode === 3} 
+                    name="size" 
+                    value={inputData.size} 
+                    placeholder="사이즈" 
+                    onChange={handleInputChange} 
+                />
+                <input 
+                    type="text" 
+                    disabled={mode === 0 || mode === 3} 
+                    name="color" 
+                    value={inputData.color} 
+                    placeholder="색상" 
+                    onChange={handleInputChange} 
+                />
+                <input 
+                    type="text" 
+                    disabled={mode === 0 || mode === 3} 
+                    name="price" 
+                    value={inputData.price} 
+                    placeholder="가격" 
+                    onChange={handleInputChange} 
+                />
             </div>
             <div>
                 {
