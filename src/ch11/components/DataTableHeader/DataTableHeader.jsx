@@ -1,8 +1,8 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./style.css";
 import Swal from "sweetalert2";
 
-function DataTableHeader({ mode, setMode, setProducts, setDeleting }) {
+function DataTableHeader({ mode, setMode, products, setProducts, setDeleting, editProductId }) {
 
     const emptyProduct = {
         id: "",
@@ -20,6 +20,11 @@ function DataTableHeader({ mode, setMode, setProducts, setDeleting }) {
     };
 
     const [inputData, setInputData] = useState({...emptyProduct});
+
+    useEffect(() => {
+        const [ product ] = products.filter(product => product.id === editProductId); //id가 같은 상품 하나를 찾아서 product에 저장
+        setInputData(!product ? { ...emptyProduct } : { ...product }); //product가 없으면 setInputData에 emptyProduct를 넣고 있으면 product를 넣는다.
+    }, [editProductId]);
 
     const handleInputChange = (e) => {
         setInputData(inputData => ({ //화살표 뒤에 중괄호를 소괄호로 감싸면 객체를 반환한다는 의미다.
@@ -70,8 +75,30 @@ function DataTableHeader({ mode, setMode, setProducts, setDeleting }) {
             resetMode();
         }
         if(mode === 2) {
-            alert("상품수정")
+            Swal.fire({
+                title: "상품 정보 수정",
+                showCancelButton: true,
+                confirmButtonText: "확인",
+                cancelButtonText: "취소"
+            }).then(() => {
+                if(result.isConfirmed){
+                    setProducts(products => [
+                        ...products.map(product => { //수정하고자 하는 상품과 id가 같은 상품을 products에서 찾는다.
+                            if(product.id === editProductId) { //수정하고자 하는 상품과 id가 같은 상품이면
+                                const { id, ...rest } = inputData; //id를 제외한 나머지 데이터를 rest에 저장
+                                return { 
+                                    ...product,
+                                    ...rest //id를 제외한 나머지 데이터를 덮어쓰기 한다.
+                                }
+                            }
+                            return product;
+                        })         
+                    ]);
+                    resetMode();
+                }
+            });
         }
+                 
         if(mode === 3) {
             Swal.fire({
                 title: "상품 정보 삭제",
@@ -82,7 +109,7 @@ function DataTableHeader({ mode, setMode, setProducts, setDeleting }) {
                 cancelButtonText: "취소"
             }).then(result => {
                 if(result.isConfirmed) {
-                    setDeleting(true);
+                    setDeleting(true); //삭제 버튼을 누르면 isDeleting 상태를 true로 변경한다.
                 }
             });
 

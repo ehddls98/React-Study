@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import "./style.css";
 
-function DataTableBody({ mode, setMode, products, setProducts, isDeleting, setDeleting}) {
+function DataTableBody({ mode, setMode, products, setProducts, isDeleting, setDeleting, setEditProductId}) {
     const [ viewProducts, setViewProducts ] = useState([]);
     const [ checkedAll, setCheckedAll ] = useState(false);
 
@@ -23,11 +23,11 @@ function DataTableBody({ mode, setMode, products, setProducts, isDeleting, setDe
     }, [viewProducts]); //상품이 추가될때 마다 실행
 
     useEffect(() => {
-        if(isDeleting) {
-            setProducts([ ...viewProducts
-                .filter(viewProduct => viewProduct.isChecked === false)
+        if(isDeleting) { //isDeleting이 true일때
+            setProducts([ ...viewProducts //viewProducts를 스프레드로 복사해와서
+                .filter(viewProduct => viewProduct.isChecked === false) //체크가 안된 상품을 빼고 새로운 배열을 만든다. 
                 .map(viewProduct => {
-                    const { isChecked, ...product} = viewProduct;
+                    const { isChecked, ...product} = viewProduct; //isChecked를 제외한 나머지 제품들을 viewProduct로 저장
                     return product;
                 }) //-> 새로 만들어진 배열을 setProducts로 넘겨준다.
             ]);
@@ -35,6 +35,14 @@ function DataTableBody({ mode, setMode, products, setProducts, isDeleting, setDe
             setDeleting(false); //삭제가 완료되면 삭제 상태를 false로 변경한다.
         }
     }, [isDeleting]); //isDeleting이 변경될때마다 실행
+
+    useEffect(() => {
+        if(mode === 2) { //조회 모드일때
+        const [ selectedProduct ] = viewProducts.filter(product => product.isChecked); //isChecked가 true인 상품 하나를 찾아서 selectedProduct에 저장
+        setEditProductId(!selectedProduct ? 0 : selectedProduct.id); //selectedId가 없으면 0, 있으면 selectedId의 id를 setEditProductId로 넘겨준다.
+        }
+
+    }, [viewProducts]); //체크 박스를 선택하거나 해제 할 때 마다 현재 수정 모드인지 확인한다.
 
     const resetViewProducts = () => {
         setViewProducts([ ...products.map(product => ({...product, isChecked: false})) ]); 
@@ -63,7 +71,7 @@ function DataTableBody({ mode, setMode, products, setProducts, isDeleting, setDe
                         }
                     }
                     return {
-                        ...product,
+                        ...product,     
                         isChecked: false //기존에 체크되어있던 체크박스를 해제한다.
                     }
                 }) ]
