@@ -80,8 +80,8 @@ function DataTableHeader({ mode, setMode, products, setProducts, setDeleting, ed
                 showCancelButton: true,
                 confirmButtonText: "확인",
                 cancelButtonText: "취소"
-            }).then(() => {
-                if(result.isConfirmed){
+            }).then(result => {
+                if(result.isConfirmed) {
                     setProducts(products => [
                         ...products.map(product => { //수정하고자 하는 상품과 id가 같은 상품을 products에서 찾는다.
                             if(product.id === editProductId) { //수정하고자 하는 상품과 id가 같은 상품이면

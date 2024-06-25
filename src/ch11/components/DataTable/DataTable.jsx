@@ -6,8 +6,8 @@ import { SAMPLE_PRODUCTS } from "../../constants/sampleProducts";
 import Swal from "sweetalert2";
 
 function DataTable() {
-    const [ isLoad, setLoad ] = useState(false);
-    const [ mode, setMode ] = useState(0); //0 = 조회, 1 = 추가, 2 = 수정, 3 = 삭제
+    const [ isLoad, setLoad ] = useState(false); //localStorage를 관리하기 위한 상태
+    const [ mode, setMode ] = useState(0); //0 = 조회, 1 = 추가, 2 = 수정, 3 = 삭제, 모드를 관리하기 위한 상태
     const [ products, setProducts ] = useState([ ...SAMPLE_PRODUCTS ]);
     const [ isDeleting, setDeleting ] = useState(false);
     const [ editProductId, setEditProductId ] = useState(0);

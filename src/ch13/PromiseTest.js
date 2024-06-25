@@ -21,14 +21,35 @@ function PromiseTest() {
         });
     }
 
-    async function p2() { //함수 앞에 async를 달면 무조건 promise 객체를 반환한다.
-        return "p2"; //async 함수에서는 return을 하면 then으로 전달된다. resolve "p2"를 한것과 같음.
+    async function p2() { //함수 앞에 async를 달면 무조건 promise 객체를 반환한다. then을 사용할 수 있다. 
+        let a = null; 
+        try {
+            a = await p4(); 
+            //await을 써주면 p4의 resolve값을 동기처리로 받아온다. 
+            //await -> 이행할 때까지 기다려준다. 
+            //await은 async 함수 안에서만 사용할 수 있다. 
+            //promise 객체에만 사용할 수 있다.
+            //await setTimeout(() => {}, 2000); -> setTimeout은 promise 객체가 아니기 때문에 async 함수 안에서 사용할 수 없다.
+            await p5();
+        } catch(error) {
+            console.log(error);
+            a = "p5";
+        }
+        return a;
     }
 
     function p3 () { //async를 달지 않았을때 promise 객체를 반환하는 방법. p3는 p2와 같은 코드이다.
         return new Promise((resolve, reject) => {
             resolve("p3");
         });
+    }
+
+    async function p4() {
+        return "p4";
+    }
+
+    async function p5() {
+        throw new Error("오류!!!!!");
     }
     
     const handleClick = () => {
@@ -42,7 +63,7 @@ function PromiseTest() {
             return "두번째 then"; //이행(resolve) -> 다음 then으로 전달
         })
         .then(result => {
-            console.log(result); //result = "두번째 then", promise는 비동기이다. then은 비동기(promise) 안의 동기처리이다.
+            console.log(result); //result = "두번째 then", promise는 동기처리로 생성되고 then은 비동기처리로 실행된다.
         }).catch(error => {
             console.log(error); 
         });
@@ -54,8 +75,14 @@ function PromiseTest() {
     }
 
     const handleClick2 = () => {
-        p2().then(r => console.log(r)); 
-        p3().then(r => console.log(r)); 
+        setTimeout(() => {
+            p2().then(r => {
+                console.log(r);
+            });
+        }, 2000);
+            
+
+        // p3().then(r => console.log(r)); 
     }
 
     return (
