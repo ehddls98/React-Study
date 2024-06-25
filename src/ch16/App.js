@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import "./App.css";
 import Swal from "sweetalert2";
 
@@ -8,6 +8,11 @@ function App() {
         name: "",
         email: ""
     }
+
+    const inputRef = {
+        name: useRef(),
+        email: useRef()
+    };
 
     const [ imgSrc, setImgSrc ] = useState("");
     const [ inputData, setInputData ] = useState({...emptyUser});
@@ -62,6 +67,17 @@ function App() {
             });
     };
 
+    const handleInputKeyDown = (e) => {
+        if(e.key === 'Enter'){
+            if(e.target.name === "name") {
+                inputRef.email.current.focus();
+            } else if(e.target.name === "email") {
+                inputRef.name.current.focus();
+                handleSubmitClick();
+            }
+        }
+    }
+
    
     return (
         <>
@@ -76,7 +92,9 @@ function App() {
                             className="input" 
                             placeholder="이름"
                             onChange={handleInputChange}
+                            onKeyDown={handleInputKeyDown}
                             value={inputData.name}
+                            ref={inputRef.name}
                         />
                         <input 
                             type="text"
@@ -84,7 +102,9 @@ function App() {
                             className="input" 
                             placeholder="이메일"
                             onChange={handleInputChange} 
+                            onKeyDown={handleInputKeyDown}
                             value={inputData.email}
+                            ref={inputRef.email}
                         />
                         <button className="saveButton" onClick={handleSubmitClick}>저장</button>
             </div>
