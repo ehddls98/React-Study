@@ -1,10 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import * as s from "./style";
 
-function MainContainer(props) {
+function MainContainer({ children }) {
     return (
-        <div>
-            
+        <div css={s.container}>
+            { children }
         </div>
     );
 }

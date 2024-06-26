@@ -5,4 +5,8 @@ export const reset = css`
         margin: 0;
         height: 100%;
     }
+
+    body {
+        background-color: #fafafa;
+    }
 `;

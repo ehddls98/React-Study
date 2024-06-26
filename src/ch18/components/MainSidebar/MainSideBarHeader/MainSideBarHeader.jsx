@@ -1,18 +1,23 @@
 /** @jsxImportSource @emotion/react */
-import MainContainer from "../MainContainer/MainContainer";
+import { FaBars, FaBook } from "react-icons/fa";
+import MainContainer from "../../MainContainer/MainContainer";
 import * as s from "./style";
-import { FaBars } from "react-icons/fa";
 
-function MainHeader({ setMainSidebarShow }) {
+function MainSideBarHeader({ setMainSidebarShow }) {
+    
     const handleMainMenuToggleClick = () => {
-        setMainSidebarShow(isShow => true);
+        setMainSidebarShow(false);
     }
 
     return (
         <div css={s.layout}>
             <MainContainer>
-                <div css={s.headerBody}>
-                    <button 
+                <div css={s.header}>
+                    <h1 css={s.title}>
+                        <FaBook />
+                        <span>수업자료</span>
+                    </h1>
+                <button 
                         css={s.menuToggleButton}
                         onClick={handleMainMenuToggleClick}
                     >
@@ -21,7 +26,7 @@ function MainHeader({ setMainSidebarShow }) {
                 </div>
             </MainContainer>
         </div>
-    );
+    )
 }
 
-export default MainHeader;
+export default MainSideBarHeader;
