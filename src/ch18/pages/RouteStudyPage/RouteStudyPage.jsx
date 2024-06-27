@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { Link, Route, Routes } from "react-router-dom";
 import MainContainer from "../../components/MainContainer/MainContainer";
-import * as s from "./style";
-import RouteStudySubPage1 from "./RouteStudySubPage1/RouteStudySubPage1";
+import RouteStudySubPage1 from "../RouteStudySubPage1/RouteStudySubPage1";
+
 
 function RouteStudyPage(props) {
     return (

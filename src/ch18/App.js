@@ -6,6 +6,7 @@ import { reset } from "./styles/global";
 import { useState } from "react";
 import MainBody from "./components/MainBody/MainBody";
 
+
 function App(props) {
     const [ isMainSidebarShow, setMainSidebarShow ] = useState(false);
 
