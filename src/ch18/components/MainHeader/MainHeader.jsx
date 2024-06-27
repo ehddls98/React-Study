@@ -1,11 +1,16 @@
 /** @jsxImportSource @emotion/react */
+import { useRecoilState } from "recoil";
+import { mainSideBarShowAtom } from "../../atoms/mainSidebarShowAtom";
 import MainContainer from "../MainContainer/MainContainer";
 import * as s from "./style";
 import { FaBars } from "react-icons/fa";
 
-function MainHeader({ setMainSidebarShow }) {
+function MainHeader() {
+
+    const [ mainSidebarShow, setMainSidebarShow ] = useRecoilState(mainSideBarShowAtom); 
+
     const handleMainMenuToggleClick = () => {
-        setMainSidebarShow(isShow => true);
+        setMainSidebarShow(true);
     }
 
     return (
